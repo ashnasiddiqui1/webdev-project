@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Soundboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #d4c3ff, #ffe2f2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            padding: 45px;
+            width: 420px;
+            border-radius: 22px;
+            backdrop-filter: blur(18px);
+            background: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #3d2b4f;
+            letter-spacing: 1px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+            margin-bottom: 35px;
+        }
+
+        button.sound-btn {
+            padding: 20px 12px;
+            background: linear-gradient(135deg, #7b4bff, #ae63ff);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button.sound-btn:hover {
+            transform: scale(1.07);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        #volume {
+            width: 100%;
+            accent-color: #7b4bff;
+        }
+
+        .mute-btn {
+            padding: 14px;
+            border: none;
+            background: linear-gradient(135deg, #ff4b88, #ff6ea8);
+            color: #fff;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .mute-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Soundboard</h1>
+
+        <div class="grid">
+            <button class="sound-btn" data-sound="dog">Dog</button>
+            <button class="sound-btn" data-sound="clap">Clap</button>
+            <button class="sound-btn" data-sound="pop">Pop</button>
+            <button class="sound-btn" data-sound="laugh">Laugh</button>
+        </div>
+
+        <div class="controls">
+            <input id="volume" type="range" min="0" max="1" step="0.01" value="1" />
+            <button class="mute-btn" id="mute">Mute</button>
+        </div>
+    </div>
+
+    <script>
+        const sounds = {
+            dog: new Audio("free-dog-bark-419014.mp3"),
+            clap: new Audio("dance-clap-241408.mp3"),
+            pop: new Audio("pop-402324.mp3"),
+            laugh: new Audio("kids-laugh-45357.mp3")
+        };
+
+        const volumeSlider = document.getElementById("volume");
+        const muteBtn = document.getElementById("mute");
+        let muted = false;
+
+        document.querySelectorAll(".sound-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const key = btn.getAttribute("data-sound");
+                const audio = sounds[key];
+                audio.currentTime = 0;
+                audio.volume = muted ? 0 : volumeSlider.value;
+                audio.play();
+            });
+        });
+
+        volumeSlider.addEventListener("input", () => {
+            if (!muted) {
+                Object.values(sounds).forEach(a => a.volume = volumeSlider.value);
+            }
+        });
+
+        muteBtn.addEventListener("click", () => {
+            muted = !muted;
+            if (muted) {
+                Object.values(sounds).forEach(a => a.volume = 0);
+                muteBtn.textContent = "Unmute";
+            } else {
+                Object.values(sounds).forEach(a => a.volume = volumeSlider.value);
+                muteBtn.textContent = "Mute";
+            }
+        });
+    </script>
+</body>
+</html>
